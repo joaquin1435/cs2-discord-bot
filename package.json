@@ -1,9 +1,13 @@
 {
-  "name": "cs2-bot",
+  "name": "cs2-discord-bot",
   "version": "1.0.0",
+  "description": "",
   "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
   "dependencies": {
-    "discord.js": "^14.0.0"
-    "axios": "^1.6.0"
+    "axios": "^1.6.0",
+    "discord.js": "^14.14.1"
   }
 }
