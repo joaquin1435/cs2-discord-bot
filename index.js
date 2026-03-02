@@ -30,7 +30,7 @@ client.on('messageCreate', async (message) => {
             return message.reply("Usá: !verificar TU_STEAMID");
         }
 
-        const channel = message.guild.channels.cache.get(VERIFICATION_CHANNEL_ID);
+        const channel = message.guild.channels.cache.get(1478042027060105297);
 
         if (!channel) return message.reply("Canal de verificación no encontrado.");
 
