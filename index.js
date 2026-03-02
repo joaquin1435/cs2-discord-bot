@@ -12,8 +12,8 @@ const client = new Client({
     ]
 });
 
-client.once('ready', () => {
-    console.log(`Bot listo como ${client.user.tag}`);
+client.once('clientReady', (c) => {
+    console.log(`✅ Bot encendido y listo como ${c.user.tag}`);
 });
 
 client.on('messageCreate', async (message) => {
