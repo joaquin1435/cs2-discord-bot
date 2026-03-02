@@ -10,7 +10,7 @@ const client = new Client({
     ]
 });
 
-const VERIFICATION_CHANNEL_ID = "1477885587695603782";
+const VERIFICATION_CHANNEL_ID = "1478042027060105297";
 
 client.once('ready', () => {
     console.log(`Bot listo como ${client.user.tag}`);
