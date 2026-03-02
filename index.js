@@ -19,7 +19,7 @@ client.on('messageCreate', async (message) => {
   if (message.content === "!ping") {
     message.reply("Pong 🏓");
   }
-  if (message.content.startsWith("!verificar")) {
+ if (message.content.startsWith("!verificar")) {
 
     const args = message.content.split(" ");
     const steamID = args[1];
@@ -29,6 +29,8 @@ client.on('messageCreate', async (message) => {
     }
 
     try {
+        message.reply("🔎 Verificando...");
+
         const response = await axios.get(
             "https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/",
             {
@@ -40,25 +42,26 @@ client.on('messageCreate', async (message) => {
             }
         );
 
-        const games = response.data.response.games;
+        console.log(response.data); // 👈 IMPORTANTE
 
-        if (!games) {
-            return message.reply("Perfil privado o SteamID inválido.");
+        if (!response.data.response || !response.data.response.games) {
+            return message.reply("❌ Perfil privado o SteamID inválido.");
         }
+
+        const games = response.data.response.games;
 
         const cs2 = games.find(game => game.appid === 730);
 
         if (cs2) {
-            message.reply(`✅ Tenés CS2 con ${Math.floor(cs2.playtime_forever / 60)} horas jugadas.`);
+            return message.reply(`✅ Tenés CS2 con ${Math.floor(cs2.playtime_forever / 60)} horas.`);
         } else {
-            message.reply("❌ No tenés CS2 en tu cuenta.");
+            return message.reply("❌ No tenés CS2 en tu cuenta.");
         }
 
     } catch (error) {
         console.log(error);
-        message.reply("Error verificando Steam.");
+        return message.reply("❌ Error consultando Steam.");
     }
 }
-
 
 client.login(process.env.TOKEN);
