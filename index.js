@@ -19,7 +19,7 @@ client.on('messageCreate', async (message) => {
   if (message.content === "!ping") {
     message.reply("Pong 🏓");
   }
- if (message.content.startsWith("!verificar")) {
+ if (message.content.startsWith("!verificar")) { console.log("ENTRÓ A VERIFICAR");
 
     const args = message.content.split(" ");
     const steamID = args[1];
