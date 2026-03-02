@@ -1,8 +1,6 @@
 const { Client, GatewayIntentBits } = require('discord.js');
 const axios = require("axios");
 
-const STEAM_API_KEY = "09CD57AC006DE306CDBEA2FC29BA6A96";
-
 const client = new Client({
     intents: [
         GatewayIntentBits.Guilds,
@@ -12,61 +10,73 @@ const client = new Client({
     ]
 });
 
-client.once('clientReady', (c) => {
-    console.log(`✅ Bot encendido y listo como ${c.user.tag}`);
+const VERIFICATION_CHANNEL_ID = "1477885587695603782";
+
+client.once('ready', () => {
+    console.log(`Bot listo como ${client.user.tag}`);
 });
 
 client.on('messageCreate', async (message) => {
 
     if (message.author.bot) return;
 
-    if (message.content === "!ping") {
-        return message.reply("Pong 🏓");
-    }
-
+    // COMANDO VERIFICAR
     if (message.content.startsWith("!verificar")) {
-
-        console.log("ENTRÓ A VERIFICAR");
 
         const args = message.content.split(" ");
         const steamID = args[1];
 
         if (!steamID) {
-            return message.reply("Tenés que poner tu SteamID. Ejemplo: !verificar 7656119XXXXXXX");
+            return message.reply("Usá: !verificar TU_STEAMID");
         }
 
-        try {
+        const channel = message.guild.channels.cache.get(VERIFICATION_CHANNEL_ID);
 
-            const response = await axios.get(
-                "https://api.steampowered.com/IPlayerService/GetOwnedGames/v0001/",
-                {
-                    params: {
-                        key: STEAM_API_KEY,
-                        steamid: steamID,
-                        include_appinfo: true
-                    }
-                }
-            );
+        if (!channel) return message.reply("Canal de verificación no encontrado.");
 
-            console.log(response.data);
+        channel.send(`
+📌 Nueva verificación
 
-            if (!response.data.response || !response.data.response.games) {
-                return message.reply("❌ Perfil privado o SteamID inválido.");
-            }
+Usuario: ${message.author}
+SteamID: ${steamID}
+Perfil: https://steamcommunity.com/profiles/${steamID}
+        `);
 
-            const games = response.data.response.games;
-            const cs2 = games.find(game => game.appid === 730);
+        return message.reply("✅ Tu solicitud fue enviada al staff.");
+    }
 
-            if (cs2) {
-                return message.reply(`✅ Tenés CS2 con ${Math.floor(cs2.playtime_forever / 60)} horas.`);
-            } else {
-                return message.reply("❌ No tenés CS2 en tu cuenta.");
-            }
+    // COMANDO ELO (SOLO ADMIN)
+    if (message.content.startsWith("!elo")) {
 
-        } catch (error) {
-            console.log(error);
-            return message.reply("❌ Error consultando Steam.");
+        if (!message.member.permissions.has("Administrator")) {
+            return message.reply("No tenés permiso para usar este comando.");
         }
+
+        const args = message.content.split(" ");
+        const user = message.mentions.members.first();
+        const elo = parseInt(args[2]);
+
+        if (!user || !elo) {
+            return message.reply("Usá: !elo @usuario 12000");
+        }
+
+        let roleName;
+
+        if (elo < 5000) roleName = "1-5k elo";
+        else if (elo < 10000) roleName = "5-10k elo";
+        else if (elo < 15000) roleName = "10-15k elo";
+        else if (elo < 20000) roleName = "15-20k elo";
+        else if (elo < 25000) roleName = "20-25k elo";
+        else if (elo < 30000) roleName = "25-30k elo";
+        else if (elo >= 30000) roleName = "+30k elo";
+
+        const role = message.guild.roles.cache.find(r => r.name === roleName);
+
+        if (!role) return message.reply("Rol no encontrado.");
+
+        await user.roles.add(role);
+
+        return message.reply(`✅ ${user.user.username} ahora es ${roleName}`);
     }
 
 });
