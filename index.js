@@ -21,29 +21,38 @@ client.on('messageCreate', async (message) => {
     if (message.author.bot) return;
 
     // COMANDO VERIFICAR
-    if (message.content.startsWith("!verificar")) {
+   if (message.content.startsWith("!verificar")) {
 
-        const args = message.content.split(" ");
-        const steamID = args[1];
+    console.log("Entró al comando verificar");
 
-        if (!steamID) {
-            return message.reply("Usá: !verificar TU_STEAMID");
-        }
+    const args = message.content.split(" ");
+    const steamID = args[1];
 
-        const channel = message.guild.channels.cache.get(1478042027060105297);
+    if (!steamID) {
+        return message.reply("Usá: !verificar TU_STEAMID");
+    }
 
-        if (!channel) return message.reply("Canal de verificación no encontrado.");
+    console.log("Buscando canal...");
+    console.log("ID configurado:", VERIFICATION_CHANNEL_ID);
 
-        channel.send(`
+    const channel = message.guild.channels.cache.get(VERIFICATION_CHANNEL_ID);
+
+    console.log("Canal encontrado:", channel);
+
+    if (!channel) {
+        return message.reply("Canal de verificación no encontrado.");
+    }
+
+    channel.send(`
 📌 Nueva verificación
 
 Usuario: ${message.author}
 SteamID: ${steamID}
 Perfil: https://steamcommunity.com/profiles/${steamID}
-        `);
+    `);
 
-        return message.reply("✅ Tu solicitud fue enviada al staff.");
-    }
+    return message.reply("✅ Tu solicitud fue enviada al staff.");
+}
 
     // COMANDO ELO (SOLO ADMIN)
     if (message.content.startsWith("!elo")) {
